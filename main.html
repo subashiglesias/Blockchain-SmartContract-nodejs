@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+	window.nodeRequire = require;
+	delete window.process;
+	delete window.require;
+	delete window.exports;
+	delete window.module;
+
+</script>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+
+	<link rel="stylesheet" type="text/css" href="main.css">
+
+	<script src="./node_modules/create-contract/node_modules/web3/dist"></script>
+
+
+</head>
+
+<body>
+	<div class="container">
+
+		<h1>Smart Contract</h1>
+
+		<h2 id="instructor"></h2>
+
+		<!--<label for="name" class="col-lg-2 control-label">Instructor Name</label>
+		<input id="name" type="text">
+
+		<label for="name" class="col-lg-2 control-label">Instructor Age</label>
+		<input id="age" type="text">-->
+
+		<button id="button" onclick="createContract()">New Contract</button>
+
+		<button id="button" onclick="existingContract()">Existing Contract</button>
+
+
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+	<script>
+		var mainWindow = null
+		var app = nodeRequire('electron').remote;
+		var dialog = app.dialog;
+		var fs = nodeRequire('fs');
+		const BrowserWindow = app.BrowserWindow;
+
+		/*var createContract = nodeRequire('create-contract')
+
+				if (typeof web3 !== 'undefined') {
+					web3 = new Web3(web3.currentProvider);
+				} else {
+					// set the provider you want from Web3.providers
+					web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+				}
+
+				web3.eth.defaultAccount = web3.eth.accounts[0];
+
+				web3.personal.unlockAccount(web3.eth.accounts[0], "admin@123", 1000)
+
+				console.log(web3.eth.accounts[0])
+
+				console.log(web3.eth.getBalance(web3.eth.accounts[0]))
+				// Our future code here..
+
+				var coursetroContract = web3.eth.contract([{
+					"constant": false,
+					"inputs": [{
+						"name": "_fName",
+						"type": "string"
+					}, {
+						"name": "_age",
+						"type": "uint256"
+					}],
+					"name": "setInstructor",
+					"outputs": [],
+					"payable": false,
+					"stateMutability": "nonpayable",
+					"type": "function"
+				}, {
+					"constant": true,
+					"inputs": [],
+					"name": "getInstructor",
+					"outputs": [{
+						"name": "",
+						"type": "string"
+					}, {
+						"name": "",
+						"type": "uint256"
+					}],
+					"payable": false,
+					"stateMutability": "view",
+					"type": "function"
+				}]);
+				var coursetro = coursetroContract.at("0x288b543946e9ed737ee9b35a8d798d46dfcb9c0a", function(e, contract) {
+					console.log(e, contract);
+					if (typeof contract.address !== 'undefined') {
+						console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
+					}
+				})*/
+
+
+		/*var subscription = web3.eth.subscribe('pendingTransactions', function(error, result) {
+				if (!error)
+					console.log(result);
+			})
+			.on("data", function(transaction) {
+				console.log(transaction);
+			});*/
+
+		function createContract() {
+
+			/*	console.log(coursetro.setInstructor('Brutis', 44))
+
+				console.log(coursetro.getInstructor())*/
+
+			mainWindow = new BrowserWindow({
+				useContentSize: true,
+				width: 1200,
+				height: 600,
+				webPreferences: {
+					nodeIntegration: true,
+					webSecurity: false,
+				},
+			});
+			mainWindow.loadURL('file://' + __dirname + '/createContract.html');
+
+			window.close();
+
+
+		}
+
+		function existingContract() {
+
+			/*	console.log(coursetro.setInstructor('Brutis', 44))
+
+				console.log(coursetro.getInstructor())*/
+
+			mainWindow = new BrowserWindow({
+				useContentSize: true,
+				width: 1200,
+				height: 600,
+				webPreferences: {
+					nodeIntegration: true,
+					webSecurity: false,
+				},
+			});
+			mainWindow.loadURL('file://' + __dirname + '/existingContract.html');
+
+			window.close();
+
+
+		}
+
+	</script>
+
+</body>
+
+</html>

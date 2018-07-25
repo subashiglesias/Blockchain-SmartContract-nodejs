@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+        window.nodeRequire = require;
+        delete window.process;
+        delete window.require;
+        delete window.exports;
+        delete window.module;
+    
+        
+    </script>
+    <script src=JS/jquery-3.2.1.js></script>
+    <script src=JS/jquery-ui.js></script>
+    <script src=tabulator/tabulator.min.js></script>
+   <link href="tabulator/tabulator.min.css" rel="stylesheet"/>
+   <style>
+           b, strong {
+                color: #5D9EB2;
+            }
+     </style> 
+    <style>
+           s, strike {
+                color: #990000;
+            }
+     </style> 
+    <style>
+.tabulator .tabulator-tableHolder .tabulator-table .tabulator-row .tabulator-cell{
+border-right:none;
+font-family: 'Lato',sans-serif;
+font-size: 12px;
+}
+ .tabulator .tabulator-header .tabulator-col .tabulator-col-content{
+ padding:0px;
+ top:1px;
+ }
+.tabulator .tabulator-header{
+border-bottom:2px solid black;
+background:#fff;
+}
+.tabulator .tabulator-tableHolder .tabulator-table .tabulator-row .tabulator-cell {
+border-right:none;
+font-size:12px;
+     font-family: 'Lato',sans-serif;
+border-bottom: 1px solid gray;
+}
+ .tabulator .tabulator-header .tabulator-frozen.tabulator-frozen-left {
+    border-right: none;
+    background:#fff !important;
+}  
+       
+.tabulator .tabulator-tableHolder .tabulator-table .tabulator-row .tabulator-frozen.tabulator-frozen-left{
+ border-right:none;
+ font-weight:600;
+    background:#fff !important;
+    font-family: 'Lato',sans-serif;
+font-size: 12px;
+ }
+ border-bottom:1px solid gray;
+ }
+ .tabulator-table  .tabulator-cell .tabulator-col-resize-handle:nth-child(odd){
+ background: #F3C6BE;
+  }
+.tabulator-cell .tabulator-frozen .tabulator-frozen-left{
+font-weight:600;
+}
+ .tabulator-table  .tabulator-cell:nth-child(even){
+ background:#F3C6BE;
+  }
+ .tabulator-table  .tabulator-cell:nth-child(odd){
+ background:#E4F2DB;
+  }
+ 
+.tabulator{
+ border:none;
+ background:#fff;
+ }
+
+.tabulator .tabulator-header .tabulator-col {
+border:none;
+background:#fff;
+}
+.tabulator-tableHolder{
+background:#fff;
+border:none;
+}
+.tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title{
+font-family: 'Lato',sans-serif;
+font-size: 12px;
+ text-align: center;
+}
+        
+  /*................scroll........*/      
+        
+        .tabulator .tabulator-tableHolder .tabulator-table .tabulator-row.tabulator-selectable:hover {
+    background-color: #fff;
+    cursor: pointer;
+}
+ .tabulator-tableHolder{
+            max-width: none !important;   
+        }
+.tabulator-tableHolder::-webkit-scrollbar-track{
+	        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	        background-color: #00000;
+        }
+        .tabulator-tableHolder::-webkit-scrollbar
+        {
+	        width: 6px !important;
+	        background-color: #e7e5d4;
+        }
+        .tabulator-tableHolder::-webkit-scrollbar-thumb{
+	        background-color: #BDBCA8;
+        }  
+</style>
+    
+       
+<meta charset="UTF-8">
+    <title>DIFF REPORT</title>
+    
+ <body>
+      
+    <div ID="outputdiv"></div>
+    <div>
+     <div id="example-table"></div>
+      <!--########################################################################-->
+     
+     <div style="margin-top:23px;margin-left:0px">
+          
+            <button id="down_csv" style="background-color: #1abc9c;
+            background-image: none;
+            display: inline-block;
+            border: none;
+            border-radius: .3em;/AY-hook/docroot/META-INF/custom_jsps
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,.1), inset 0 -0.25em 0 rgba(0,0,0,.25), 0 0.25em 0.25em rgba(0,0,0,.05);
+            color: black;
+            cursor: pointer;
+            font-family: 'Lato',sans-serif;
+            font-weight: 500;
+            line-height: 1.5;
+            letter-spacing: 1px;
+            padding: .5em 1.5em .75em;
+            position: relative;
+            text-decoration: none;var tb1 = finalresults.data
+            text-shadow: 0 1px 1px hsla(0,0%,100%,.25);
+            vertical-align: middle;
+            -webkit-user-select: none;">Download
+            </button> 
+            </div>
+     <!--########################################################################-->
+     <!--<div id="example-table1"></div>-->
+          <!--########################################################################-->
+     
+<!--     <div style="margin-top:23px;margin-left:0px">
+          
+            <button id="down1_csv" style="background-color: #1abc9c;
+            background-image: none;
+            display: inline-block;
+            border: none;
+            border-radius: .3em;/AY-hook/docroot/META-INF/custom_jsps
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,.1), inset 0 -0.25em 0 rgba(0,0,0,.25), 0 0.25em 0.25em rgba(0,0,0,.05);
+            color: black;
+            cursor: pointer;
+            font-family: 'Lato',sans-serif;
+            font-weight: 500;
+            line-height: 1.5;
+            letter-spacing: 1px;
+            padding: .5em 1.5em .75em;
+            position: relative;
+            text-decoration: none;var tb1 = finalresults.data
+            text-shadow: 0 1px 1px hsla(0,0%,100%,.25);
+            vertical-align: middle;
+            -webkit-user-select: none;">Download
+            </button> 
+            </div>-->
+     </div>
+ <!--    <div id="example-table"></div>-->
+ <script>
+        var app = nodeRequire('electron').remote;
+         var Papa = nodeRequire('papaparse');
+        var _ = nodeRequire('lodash');
+        var merge = nodeRequire('lodash.merge');
+        var isUndefined = nodeRequire('lodash.isundefined');
+        
+      //  var tabulator = nodeRequire('jquery.tabulator');
+        //var $ = nodeRequire("jquery");
+
+//        var out = localStorage.getItem('ds');
+        var output = localStorage.getItem('output');
+//        console.log(out);
+        
+        console.log(output);
+     
+        var lasthope = $(output);
+     
+        var tablebody = lasthope.find('tbody');
+        var lhtd = tablebody.find('td');
+        var head = lhtd[0].innerHTML + "|\"Status\"";
+     
+        console.log(head);
+
+     
+     
+        
+        
+     
+/*      out = out.replace(/<ins style="background:#e6ffe6;">/g, "ins style=\"background:#e6ffe6;\"");
+     out = out.replace(/<del style="background:#ffe6e6;">/g, "del style=\"background:#ffe6e6;\"");
+     out = out.replace(/<\/ins>/g, "/ins");
+     out = out.replace(/<\/del>/g, "/del");
+     var mytag = $(out).find("#mytag").prevObject;*/
+   //  console.log($(mytag).find('span'));
+     
+     
+     //For multiple paragraph Bug
+//     try {
+//         var multiinslen = out.match(/\<ins style="background:#e6ffe6;">(.*?)<\/ins>/g).length;
+//     
+//     var multiins=[];
+//     
+//      for(var i=0;i<multiinslen;i++){
+//          multiins = out.match(/\<ins style="background:#e6ffe6;">(.*?)<\/ins>/g)
+//          try {
+//              var plen = multiins[i].match(/<p>/g).length;
+//              var tmptxt = multiins[i].replace(/<p>/g, "<p><ins style=\"background:#e6ffe6;\">")
+//               out = out.replace(multiins[i],tmptxt);
+//          }catch (err) {
+//              
+//          }
+//          
+//             
+//          
+//      }
+//        out = out.replace(/<ins style=\"background:#e6ffe6;\"><\/ins>/g, "");
+//        out = out.replace(/<del style=\"background:#ffe6e6;\"><\/del>/g, "");
+//      console.log(out);
+//     }catch (err){
+//         
+//         
+//     }
+//     
+/*        
+        var mytag = $(out).find("#mytag").prevObject;*/
+   //  console.log($(mytag).find('span'));
+     
+/*     
+     mytag[0].innerHTML = mytag[0].innerHTML.replace(/ins style="background:#e6ffe6;"/g, "<ins style=\"background:#e6ffe6;\">");
+     mytag[0].innerHTML = mytag[0].innerHTML.replace(/del style="background:#ffe6e6;"/g, "<del style=\"background:#ffe6e6;\">");
+     mytag[0].innerHTML = mytag[0].innerHTML.replace(/\/ins/g, "</ins>");
+     mytag[0].innerHTML = mytag[0].innerHTML.replace(/\/del/g, "</del>");*/
+     //   console.log(out);
+     
+      console.log(lasthope);
+/*      console.log(mytag);
+  */
+      var final1= head + "\n";
+     
+      var final2= head + "\n";
+   
+    // console.log(mytag.children().find('ins'));
+     
+     /*var mytag1 = mytag.firstElementChild.innerHTML;*/
+     
+     /*var mytag1 = $(out).find("#mytag").prevObject.firstElementChild.innerHTML;*/
+     
+   /*  console.log(mytag1);*/
+     var insval = tablebody.find('.insert');
+     
+     var delval = tablebody.find('.delete');
+     
+    /* var final1 = insval + delval ;*/
+     
+     for(var i=0;i<insval.length;i++)
+         {   
+             if(insval[i].innerHTML !== "" && insval[i].innerHTML !== " " )
+             final1 = final1 + insval[i].innerHTML  + "\n";
+         }
+     
+     for(var i=0;i<delval.length;i++)
+         {
+             if(delval[i].innerHTML !== "" && delval[i].innerHTML !== " ")
+             final2 = final2 + delval[i].innerHTML + "\n";
+         }
+     
+     
+     
+     console.log(final1) ;
+     
+     console.log(insval);
+     console.log(delval);
+     
+     
+/*     var ins = mytag.children().find('ins').length;
+     var del = mytag.children().find('del').length;
+     var insval = mytag.children().find('ins');
+     var delval = mytag.children().find('del');
+     var final= "";
+     var final= mytag[0].firstElementChild.innerHTML + "\n <br>";*/
+    // var head = mytag[0].firstElementChild.innerHTML
+     //console.log(final);
+  /*   for(var i=0;i<ins;i++){
+         //var re = new RegExp(insval[i].parentElement.innerHTML, 'g');
+         if(final.indexOf(insval[i].parentElement.innerHTML) !== -1){
+             console.log(insval[i].parentElement.innerHTML);
+         }else {
+             final = final + insval[i].parentElement.innerHTML + "\n <br>";
+         }
+         /*final = final.parentElement;
+         final = final.innerHTML;*/
+    //     console.log(final);
+    /* }*/
+     
+     
+     
+/*      for(var i=0;i<del;i++){
+         // var re = new RegExp(delval[i].parentElement.innerHTML, 'g');
+         if(final.indexOf(delval[i].parentElement.innerHTML) !== -1){
+             console.log(delval[i].parentElement.innerHTML);
+         }else {
+             final = final + delval[i].parentElement.innerHTML + "\n <br>";
+         }
+        
+     }*/
+     
+    /* 
+    document.getElementById('outputdiv').innerHTML = final; 
+        //console.log(JSON.stringify(out));
+        //<del style="background:#ffe6e6;">
+     final = final.replace(/<del style="background:#ffe6e6;">/g, "<del style=\"background:#e6ffe6;\">aark");
+     final = final.replace(/<ins style="background:#e6ffe6;">/g, "<ins style=\"background:#e6ffe6;\">mark");
+     final = final.replace(/<\/ins>/g, "dark");
+     final = final.replace(/<\/del>/g, "bark");
+     console.log(final);*/
+  /*       var res = ds.match(/<br>/g).length;
+                
+                for(var j=0;j<res;j++){
+                    ds = ds.replace("&para;<br>","</p><p>");
+                }
+                console.log(res);
+             */
+     
+     
+        var regex = /(<([^>]+)>)/ig
+        //var downplaintext = final1.replace(/<del style="background:#ffe6e6;">[^<>]*<\/del>/g, "");
+
+        /*var plaintxt = final.replace(regex, "");
+        var downplaintext = plaintxt;
+       console.log(downplaintext);
+       console.log(plaintxt);*/
+        
+    /* plaintxt = plaintxt.replace(/mark/g, "<mark>");
+     plaintxt = plaintxt.replace(/dark/g, "</mark>")
+      downplaintext = downplaintext.replace(/mark/g, "");
+     downplaintext = downplaintext.replace(/dark/g, "");
+     var tmpregtxt = plaintxt.match(/<mark>[^<>]*<\/mark>/g);
+     try{
+         for (var z=0;z<tmpregtxt.length;z++){
+         var tmpreg = tmpregtxt[z];
+         var tmprepl = tmpreg.replace(/\|/g,"</mark>|<mark>");
+         plaintxt = plaintxt.replace(tmpreg,tmprepl);
+     }
+      plaintxt = plaintxt.replace(/aark/g, "<aark>");
+     plaintxt = plaintxt.replace(/bark/g, "</aark>");
+     downplaintext = downplaintext.replace(/aark/g, "");
+     downplaintext = downplaintext.replace(/bark/g, "");
+     }catch (err) {
+         
+     }
+     
+     var tmpregtxt = plaintxt.match(/<aark>[^<>]*<\/aark>/g);
+     try{
+          for (var z=0;z<tmpregtxt.length;z++){
+         var tmpreg = tmpregtxt[z];
+         var tmprepl = tmpreg.replace(/\|/g,"</aark>|<aark>");
+         plaintxt = plaintxt.replace(tmpreg,tmprepl);
+            }  
+     console.log(tmpregtxt);
+     plaintxt = plaintxt.replace(/<mark>\n<\/mark>/g, "");
+     plaintxt = plaintxt.replace(/<aark>\n<\/aark>/g, "");
+     }catch (err) {
+         
+     }
+    
+     plaintxt = plaintxt.replace(/<mark>\" "<\/mark>/g, "");
+     plaintxt = plaintxt.replace(/^\s*\n/gm, "");
+     console.log(plaintxt);*/
+     var results1 = Papa.parse(final1,{
+            header:true,
+            delimiter: "|"
+            });
+     
+     var delresults = Papa.parse(final2,{
+            header:true,
+            delimiter: "|"
+            });
+      var keys = Object.keys(results1.data[0]);
+     console.log(keys);
+     var tmpkey = keys[0];
+     /*tmpkey = tmpkey.replace(/"/g,"");
+     console.log(tmpkey);
+obj[Object.keys(obj)[0]];*/
+      for(var i=0;i<results1.data.length;i++){
+         
+   
+      results1.data[i].Status = "Added";
+
+       if(results1.data[i][keys[0]] === ""){
+          delete results1.data[i];
+          results1.data.length = results1.data.length - 1;
+      }
+      }
+      for(var i=0;i<delresults.data.length;i++){
+            
+      delresults.data[i].Status = "Deleted";
+      
+      if(delresults.data[i][keys[0]] === ""){
+          delete delresults.data[i];
+          delresults.data.length = delresults.data.length - 1;
+      }
+      }
+      
+    
+/*     
+     o[ new_key ] = o[ old_key ];
+delete o[ old_key ];*/
+     
+     //results1 = _.pick(results1, _.identity);
+     
+     console.log(JSON.stringify(results1.data));
+     console.log(JSON.stringify(delresults.data));
+     
+     
+     var mainfinal = $.merge(results1.data,delresults.data);
+     
+  /*console.log(JSON.stringify($.extend(true,{},results1.data,results2.data)))*/
+     
+   /*  console.log(mainfinal.data);*/
+/*     var finalresults = Papa.parse(downplaintext,{
+         header:true,
+            delimiter: "|"
+            });
+     var keys = Object.keys(finalresults.data[0]);
+     console.log(keys);
+     var tmpkey = keys[0];
+     tmpkey = tmpkey.replace(/"/g,"");
+     console.log(tmpkey);
+obj[Object.keys(obj)[0]];*/
+ /*     for(var i=0;i<finalresults.data.length;i++){
+          
+      finalresults.data[i][keys[0]] = finalresults.data[i][keys[0]].replace(/"/g,"");
+      finalresults.data[i][tmpkey] = finalresults.data[i][keys[0]];
+      delete finalresults.data[i][keys[0]];
+      }*/
+     
+ /*    try{
+         resultfin.data = JSON.stringify(results1.data).replace(/<mark>/g, "");
+     resultfin.data = (resultfin.data).replace(/<\/mark>/g, ""); 
+     } catch(err){
+         
+     }
+     try{
+           resultfin.data = JSON.stringify(results1.data).replace(/<aark>/g, "");
+     resultfin.data = (resultfin.data).replace(/<\/aark>/g, ""); 
+     }catch(err){
+         
+     }*/
+/*    
+     console.log(JSON.stringify(finalresults.data))*/
+     
+    /* console.log(head);*/
+     var headsim = head.replace(regex, "");
+     console.log(headsim);
+
+      headsim = headsim.replace(/\|/g, ',');
+     console.log(headsim);
+     
+   var results2 = Papa.parse(headsim,{
+            header:false,
+            delimiter: ","
+            });
+     
+     
+     
+     results2.data[0][0] = results2.data[0][0].replace(/"/g,"");
+    // results2.data[0][0] = results2.data[0][0].replace(/-/g,"_");
+     
+     console.log(results2);
+     
+     var lenhead =results2.data[0].length;
+     var myobj={};
+     myobj.title={};
+     myobj.field={};
+     var arrastr=[];
+         /* var myformatter = function(cell, formatterParams){
+        // console.log(cell);
+         var value = cell.getValue();
+          //    console.log(cell.getElement().css({"background-color":"#A6A6DF"}));
+            try{ 
+            value = value.replace(/mark/g,"b");
+            }catch(err){
+
+            }
+            if(value != 'undefined'){
+                document.b.style.backgroundColor = "red";
+            return "<span>" + value +"</span>";
+            }
+            else{
+            return "<span></span>"; 
+            }
+            };*/
+        for(var i=0;i<lenhead;i++) {
+        var str="";
+       if(i==0){
+            str="{\"title\":\""+results2.data[0][i]+"\", \"field\":\""+results2.data[0][i]+"\", \"formatter\":\"myformatter\",\"frozen\":\"true\"}";   
+       }else{
+           str="{\"title\":\""+results2.data[0][i]+"\", \"field\":\""+results2.data[0][i]+"\", \"formatter\":\"myformatter\"}";   
+            
+       }
+            if (results2.data[0][i] !== undefined){
+              myobj.title[i]=results2.data[0][i];
+              myobj.field[i]=results2.data[0][i];
+            } 
+            arrastr[i]=str; 
+
+            
+        }
+
+     var strreg=arrastr.toString();
+     // console.log(myobj);
+    /* for (var k=0;k<arrastr.length;k++){
+          eval('var obj='+arrastr[k]);
+     }*/
+     
+    strreg = strreg.replace(/"{/g,"{");
+      strreg = strreg.replace(/}"/g,"}")
+     //console.log(obj);
+     /*strreg = strreg+",";*/
+ /*    var res = ds.match(/<br>/g).length;
+                
+                for(var j=0;j<res;j++){
+                    ds = ds.replace("&para;<br>","</p><p>");
+                }
+                console.log(res);
+             */
+     
+     
+/*     strreg = JSON.stringify(strreg);*/
+     console.log(strreg);
+     var results3 = Papa.parse(strreg,{
+            header:false,
+    });
+     
+     var results4 = Papa.unparse(results3,{
+         header:false,
+     });
+      //var myobj = JSON.parse(arrastr);
+    // console.log(results4);
+
+     //console.log(myobj);
+     var key1 = {};
+     key1 = "Prod-Key";
+
+         Tabulator.extendExtension("format", "formatters", {
+    myformatter:function(cell, formatterParams){
+         
+       // alert();
+         var value = cell.getValue();
+            try{ 
+            value = value.replace(/mark/g,"b")
+            value = value.replace(/aark/g,"s")
+            }catch(err){
+
+            }
+            if(value != 'undefined'){
+                /*cell.getRow().update({"status":"added"});*/
+                // row.update({"name":"steve"}); 
+            return "<span>" + value +"</span>";
+            }
+            else{
+            return "<span></span>"; 
+            }
+            },
+});     
+     
+     
+     $("#example-table").tabulator({    
+    height:505, 
+    layout:"fitData",
+ /*      downloadDataMutator:function(data){
+           alert("gfg");
+             data.forEach(function(row){
+            console.log(row);
+                 console.log("ghghg");
+        });
+
+        return data;
+    },*/
+
+         });
+/*      $("#example-table1").tabulator({    
+    height:205, 
+    layout:"fitData",
+    
+         });*/
+    
+     var vrar ='['+strreg+']';
+   $("#example-table").tabulator("setColumns", JSON.parse(vrar));    
+/*$("#example-table1").tabulator("setColumns", JSON.parse(vrar)); */   
+/*          $("#example-table1").tabulator("addColumn", {title:"Status", field:"status"})
+     $("#example-table").tabulator("addColumn", {title:"Status", field:"status"});*/
+
+$("#down_csv").click(function(){
+   
+    $("#example-table").tabulator("download", "csv", "data.csv");
+});
+/*$("#down1_csv").click(function(){
+   
+    $("#example1-table").tabulator("download", "csv", "data.csv");
+});    */
+
+     
+var tabledata = JSON.stringify(results1.data);
+     
+var tb1 = JSON.stringify(delresults.data);
+//
+     
+$("#example-table").tabulator("setData", tabledata);
+
+/*$("#example-table1").tabulator("setData", tb1);
+     
+$("#example-table").tabulator("addData", tb1);     */
+    </script>
+     
+  
+     
+     
+     
+</body>
+
+</html>

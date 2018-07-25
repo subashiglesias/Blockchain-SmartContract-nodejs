@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+	window.nodeRequire = require;
+	delete window.process;
+	delete window.require;
+	delete window.exports;
+	delete window.module;
+
+</script>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+
+	<link rel="stylesheet" type="text/css" href="main.css">
+
+	<script src="./node_modules/create-contract/node_modules/web3/dist"></script>
+
+
+</head>
+
+<body>
+	<div class="container">
+
+		<h1>Create Contract</h1>
+
+		<h2 id="instructor"></h2>
+
+		<!--<label for="name" class="col-lg-2 control-label">Instructor Name</label>
+		<input id="name" type="text">
+
+		<label for="name" class="col-lg-2 control-label">Instructor Age</label>
+		<input id="age" type="text">-->
+
+		<button id="button" onclick="creation()">Create a new Contract</button>
+
+
+		<div id="mining" style="display: none">
+			<h3>Waiting for your contract to be mined</h3>
+		</div>
+
+
+
+
+		<div id="final" style="display: none">
+			<h4>Your contract address is</h4>
+			<input type="text" name="textbox3" id="textbox3" readonly="true" />
+		</div>
+
+		<div id="function" style="display: none">
+			<h4>Set your initial count of images</h4>
+			<input type="text" name="textbox4" id="textbox4" />
+			<button id="setfun" onclick="setfunction()">Set value</button>
+		</div>
+		
+		<div id="getvalue" style="display: none">
+			<h4>Check the number of images available</h4>
+			<input type="text" name="textbox5" id="textbox5" readonly="true"/>
+			<button id="setfun" onclick="getfunction()">Get value</button>
+		</div>
+
+		<!--		<button id="button" onclick="existingContract()">Existing Contract</button>-->
+
+
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+	<script>
+		var createContract = nodeRequire('create-contract')
+		var testcon;
+		var contractad;
+		var isSuccess = true;
+		if (typeof web3 !== 'undefined') {
+			web3 = new Web3(web3.currentProvider);
+		} else {
+			// set the provider you want from Web3.providers
+			web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+		}
+
+		web3.eth.defaultAccount = web3.eth.accounts[0];
+
+		web3.personal.unlockAccount(web3.eth.accounts[0], "admin@123", 1000)
+
+		console.log(web3.eth.accounts[0])
+
+		console.log(web3.eth.getBalance(web3.eth.accounts[0]))
+		// Our future code here..
+
+		function creation() {
+			
+			
+			document.getElementById("button").style.display = "none"
+			document.getElementById("mining").style.display = "block"
+
+			var testconContract = web3.eth.contract([{
+				"constant": true,
+				"inputs": [],
+				"name": "get",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "a",
+					"type": "int256"
+				}],
+				"name": "setadmin",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "x",
+					"type": "int256"
+				}, {
+					"name": "y",
+					"type": "string"
+				}],
+				"name": "set",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": true,
+				"inputs": [],
+				"name": "getall",
+				"outputs": [{
+					"name": "",
+					"type": "int256[]"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "source",
+					"type": "string"
+				}],
+				"name": "stringToBytes32",
+				"outputs": [{
+					"name": "result",
+					"type": "bytes32"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": true,
+				"inputs": [],
+				"name": "getallS",
+				"outputs": [{
+					"name": "",
+					"type": "bytes32[]"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}]);
+			var testcon = testconContract.new({
+				from: web3.eth.accounts[0],
+				data: '0x60606040526103e8600355602060405190810160405280600081525060049080519060200190610030929190610068565b50602060405190810160405280600081525060059080519060200190610057929190610068565b50341561006357600080fd5b61010d565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106100a957805160ff19168380011785556100d7565b828001600101855582156100d7579182015b828111156100d65782518255916020019190600101906100bb565b5b5090506100e491906100e8565b5090565b61010a91905b808211156101065760008160009055506001016100ee565b5090565b90565b6105528061011c6000396000f300606060405260043610610078576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680636d4ce63c1461007d5780638990dfc6146100a65780638c2c06e7146100dd5780639097479514610157578063cfb51928146101c1578063d95c3f1f1461023a575b600080fd5b341561008857600080fd5b6100906102a4565b6040518082815260200191505060405180910390f35b34156100b157600080fd5b6100c760048080359060200190919050506102ae565b6040518082815260200191505060405180910390f35b34156100e857600080fd5b610141600480803590602001909190803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919050506102bc565b6040518082815260200191505060405180910390f35b341561016257600080fd5b61016a610357565b6040518080602001828103825283818151815260200191508051906020019060200280838360005b838110156101ad578082015181840152602081019050610192565b505050509050019250505060405180910390f35b34156101cc57600080fd5b61021c600480803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919050506103b5565b60405180826000191660001916815260200191505060405180910390f35b341561024557600080fd5b61024d6103e6565b6040518080602001828103825283818151815260200191508051906020019060200280838360005b83811015610290578082015181840152602081019050610275565b505050509050019250505060405180910390f35b6000600354905090565b600081600381905550919050565b6000808360035403131561034c578260035403600381905550600180548060010182816102e99190610448565b916000526020600020900160008590919091505550610307826103b5565b60078160001916905550600280548060010182816103259190610474565b91600052602060002090016000600754909190915090600019169055506003549050610351565b600080fd5b92915050565b61035f6104a0565b60018054806020026020016040519081016040528092919081815260200182805480156103ab57602002820191906000526020600020905b815481526020019060010190808311610397575b5050505050905090565b60006103bf6104b4565b8290506000815114156103d857600060010291506103e0565b602083015191505b50919050565b6103ee6104c8565b600280548060200260200160405190810160405280929190818152602001828054801561043e57602002820191906000526020600020905b81546000191681526020019060010190808311610426575b5050505050905090565b81548183558181151161046f5781836000526020600020918201910161046e91906104dc565b5b505050565b81548183558181151161049b5781836000526020600020918201910161049a9190610501565b5b505050565b602060405190810160405280600081525090565b602060405190810160405280600081525090565b602060405190810160405280600081525090565b6104fe91905b808211156104fa5760008160009055506001016104e2565b5090565b90565b61052391905b8082111561051f576000816000905550600101610507565b5090565b905600a165627a7a723058201357b86546acfd3bbbedd6451899ce80a3ae3d8a17f4ab7aaf03668cb90ff9070029',
+				gas: '4700000'
+			}, function(e, contract) {
+				console.log(e, contract);
+				if (typeof contract.address !== 'undefined') {
+					console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
+					document.getElementById("mining").style.display = "none"
+					document.getElementById("final").style.display = "block"
+					document.getElementById("function").style.display = "block"
+					console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
+					var textbox3 = document.getElementById('textbox3');
+					textbox3.value = contract.address
+					contractad = contract.address;
+				}
+			})
+
+			console.log(testcon)
+
+		}
+
+
+		function setfunction() {
+			document.getElementById("getvalue").style.display = "none"
+			var testconContract = web3.eth.contract([{
+				"constant": true,
+				"inputs": [],
+				"name": "get",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "a",
+					"type": "int256"
+				}],
+				"name": "setadmin",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "x",
+					"type": "int256"
+				}, {
+					"name": "y",
+					"type": "string"
+				}],
+				"name": "set",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": true,
+				"inputs": [],
+				"name": "getall",
+				"outputs": [{
+					"name": "",
+					"type": "int256[]"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "source",
+					"type": "string"
+				}],
+				"name": "stringToBytes32",
+				"outputs": [{
+					"name": "result",
+					"type": "bytes32"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": true,
+				"inputs": [],
+				"name": "getallS",
+				"outputs": [{
+					"name": "",
+					"type": "bytes32[]"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}]);
+			testcon = testconContract.at(contractad);
+			console.log(testcon);
+			var numvalue = Number(document.getElementById('textbox4').value)
+			console.log(numvalue)
+			testcon.setadmin(numvalue, function(err, res) {
+				
+				console.log(res)
+				//console.log(web3.fromAscii(res));
+				//console.log(web3.toAscii(res));
+				while(isSuccess){
+					var result = web3.eth.getTransaction(res);
+					var resultval = result.blockNumber;
+					if(resultval !== null){
+						isSuccess = false
+						console.log(resultval)
+						document.getElementById("getvalue").style.display = "block"
+					}
+				}
+				console.log(err);
+				
+			});
+		}
+		
+		function getfunction() {
+			var testconContract = web3.eth.contract([{
+				"constant": true,
+				"inputs": [],
+				"name": "get",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "a",
+					"type": "int256"
+				}],
+				"name": "setadmin",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "x",
+					"type": "int256"
+				}, {
+					"name": "y",
+					"type": "string"
+				}],
+				"name": "set",
+				"outputs": [{
+					"name": "",
+					"type": "int256"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": true,
+				"inputs": [],
+				"name": "getall",
+				"outputs": [{
+					"name": "",
+					"type": "int256[]"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}, {
+				"constant": false,
+				"inputs": [{
+					"name": "source",
+					"type": "string"
+				}],
+				"name": "stringToBytes32",
+				"outputs": [{
+					"name": "result",
+					"type": "bytes32"
+				}],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}, {
+				"constant": true,
+				"inputs": [],
+				"name": "getallS",
+				"outputs": [{
+					"name": "",
+					"type": "bytes32[]"
+				}],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			}]);
+			testcon = testconContract.at(contractad);
+			console.log(testcon);
+			testcon.get(function(err, res) {
+				console.log(res)
+				//console.log(web3.fromAscii(res));
+				//console.log(web3.toAscii(res));
+				console.log(err);
+				
+			});
+		}
+		/*var subscription = web3.eth.subscribe('pendingTransactions', function(error, result) {
+				if (!error) 1900000
+					console.log(result);
+			})
+			.on("data", function(transaction) {
+				console.log(transaction);
+			});*/
+
+	</script>
+
+</body>
+
+</html>
